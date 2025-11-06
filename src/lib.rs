@@ -18,6 +18,17 @@ use axum::{
 use std::sync::Arc;
 
 #[cfg(feature = "extension")]
+#[cfg_attr(feature = "utoipa", utoipa::path(
+    post,
+    path = "/tunnel",
+    request_body = Vec<u8>,
+    responses(
+        (status = 200, description = "Successfully tunneled to Sentry"),
+        (status = 400, description = "Bad request - invalid envelope or DSN"),
+        (status = 500, description = "Internal server error - failed to tunnel")
+    ),
+    tag = "sentry"
+))]
 /// Create Sentry tunnel route handler
 pub async fn sentry_tunnel_handler(
     State(config): State<Arc<SentryTunnelConfig>>,
@@ -50,6 +61,22 @@ impl SentryTunnelExt for Router {
 /// Create a standalone Sentry tunnel service
 pub fn create_sentry_tunnel_service(config: SentryTunnelConfig) -> Router {
     Router::new().sentry_tunnel(config)
+}
+
+#[cfg(feature = "utoipa")]
+/// Implementation of SentryTunnelExt for utoipa-axum OpenApiRouter
+impl<S> SentryTunnelExt for utoipa_axum::router::OpenApiRouter<S>
+where
+    S: Clone + Send + Sync + 'static,
+{
+    fn sentry_tunnel(self, config: SentryTunnelConfig) -> Self {
+        let path = config.path.clone();
+        let config_arc = Arc::new(config);
+
+        // Add the route using the standard router method
+        // The utoipa::path annotation is already applied to the handler
+        self.route(&path, post(sentry_tunnel_handler).with_state(config_arc))
+    }
 }
 
 /// Builder pattern for creating configuration

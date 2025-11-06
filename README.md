@@ -30,6 +30,7 @@ sentry-tunnel = "0.1"
 - **`extension`** (default): Router extension trait for adding tunnel to existing Router
 - **`standalone`**: Standalone service creation (depends on `extension`)
 - **`service`**: Convenience feature enabling both `extension` and `standalone`
+- **`utoipa`**: OpenAPI/utoipa support for documenting the tunnel endpoint (depends on `extension`)
 
 To disable default features and use only the core:
 

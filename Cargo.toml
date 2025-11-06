@@ -1,6 +1,6 @@
 [package]
 name = "sentry-tunnel"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 authors = ["AprilNEA <github@sku.moe>"]
 description = "A Sentry tunnel middleware for Axum"
@@ -10,11 +10,13 @@ repository = "https://github.com/AprilNEA/sentry-tunnel"
 [features]
 default = ["extension"]
 # Router extension trait for adding tunnel to existing Router
-extension = ["axum", "tower"]
+extension = ["dep:axum", "dep:tower"]
 # Standalone service creation
 standalone = ["extension"]
 # Convenience feature for enabling all service features
 service = ["extension", "standalone"]
+# OpenAPI/utoipa support
+utoipa = ["extension", "dep:utoipa", "dep:utoipa-axum"]
 
 [dependencies]
 axum = { version = "0.8", optional = true }
@@ -28,6 +30,9 @@ url = "2.5"
 tracing = "0.1"
 thiserror = "1.0"
 
+utoipa = { version = "5", optional = true }
+utoipa-axum = { version = "0.2", optional = true }
+
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
 
@@ -38,3 +43,7 @@ required-features = ["extension"]
 [[example]]
 name = "standalone"
 required-features = ["standalone"]
+
+[[example]]
+name = "utoipa"
+required-features = ["utoipa"]
