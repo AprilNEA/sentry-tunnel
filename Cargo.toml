@@ -1,6 +1,6 @@
 [package]
 name = "sentry-tunnel"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 authors = ["AprilNEA <github@sku.moe>"]
 description = "A Sentry tunnel middleware for Axum"

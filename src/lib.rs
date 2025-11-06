@@ -7,13 +7,7 @@ pub use error::SentryTunnelError;
 pub use handler::handle_sentry_tunnel_inner;
 
 #[cfg(feature = "extension")]
-use axum::{
-    body::Bytes,
-    extract::State,
-    http::StatusCode,
-    routing::post,
-    Router,
-};
+use axum::{Router, body::Bytes, extract::State, http::StatusCode, routing::post};
 #[cfg(feature = "extension")]
 use std::sync::Arc;
 
@@ -45,15 +39,19 @@ pub trait SentryTunnelExt {
 }
 
 #[cfg(feature = "extension")]
-impl SentryTunnelExt for Router {
+impl<S> SentryTunnelExt for Router<S>
+where
+    S: Clone + Send + Sync + 'static,
+{
     fn sentry_tunnel(self, config: SentryTunnelConfig) -> Self {
         let path = config.path.clone();
         let config = Arc::new(config);
 
-        self.route(
-            &path,
-            post(sentry_tunnel_handler).with_state(config),
-        )
+        let tunnel_router = Router::new()
+            .route(&path, post(sentry_tunnel_handler))
+            .with_state(config);
+
+        self.merge(tunnel_router)
     }
 }
 
@@ -104,9 +102,9 @@ impl SentryTunnelBuilder {
         I: IntoIterator<Item = S>,
         S: Into<String>,
     {
-        self.config.allowed_project_ids.extend(
-            project_ids.into_iter().map(|s| s.into())
-        );
+        self.config
+            .allowed_project_ids
+            .extend(project_ids.into_iter().map(|s| s.into()));
         self
     }
 
