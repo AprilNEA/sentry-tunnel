@@ -1,5 +1,11 @@
 # Sentry Tunnel
 
+[![Crates.io](https://img.shields.io/crates/v/sentry-tunnel.svg)](https://crates.io/crates/sentry-tunnel)
+[![Documentation](https://docs.rs/sentry-tunnel/badge.svg)](https://docs.rs/sentry-tunnel)
+[![License: MIT OR Apache-2.0](https://img.shields.io/crates/l/sentry-tunnel.svg)](https://github.com/AprilNEA/sentry-tunnel#license)
+[![Rust](https://img.shields.io/badge/rust-1.75%2B-blue.svg?maxAge=3600)](https://github.com/AprilNEA/sentry-tunnel)
+[![Downloads](https://img.shields.io/crates/d/sentry-tunnel.svg)](https://crates.io/crates/sentry-tunnel)
+
 A flexible Sentry tunnel middleware for Axum that helps bypass ad-blockers and content blockers by proxying Sentry error reports through your own domain.
 
 ## Features
