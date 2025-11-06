@@ -1,0 +1,40 @@
+[package]
+name = "sentry-tunnel"
+version = "0.1.0"
+edition = "2024"
+authors = ["AprilNEA <github@sku.moe>"]
+description = "A Sentry tunnel middleware for Axum"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/AprilNEA/sentry-tunnel"
+
+[features]
+default = ["extension"]
+# Router extension trait for adding tunnel to existing Router
+extension = ["axum", "tower"]
+# Standalone service creation
+standalone = ["extension"]
+# Convenience feature for enabling all service features
+service = ["extension", "standalone"]
+
+[dependencies]
+axum = { version = "0.7", optional = true }
+tower = { version = "0.4", optional = true }
+http = "1.0"
+bytes = "1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", default-features = false, features = ["rustls-tls"] }
+url = "2.5"
+tracing = "0.1"
+thiserror = "1.0"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
+
+[[example]]
+name = "extension"
+required-features = ["extension"]
+
+[[example]]
+name = "standalone"
+required-features = ["standalone"]
