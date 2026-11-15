@@ -18,15 +18,15 @@ pub async fn handle_sentry_tunnel_inner(
     config: Arc<SentryTunnelConfig>,
     envelope_bytes: &[u8],
 ) -> Result<(), SentryTunnelError> {
-    // Decode envelope
-    let envelope = std::str::from_utf8(envelope_bytes)
-        .map_err(|_| SentryTunnelError::InvalidEncoding)?;
-
     // Extract first line (header)
-    let header_line = envelope
-        .split('\n')
+    let header_bytes = envelope_bytes
+        .split(|x| *x == b'\n')
         .next()
         .ok_or(SentryTunnelError::EmptyEnvelope)?;
+
+    // Decode header
+    let header_line =
+        std::str::from_utf8(header_bytes).map_err(|_| SentryTunnelError::InvalidEncoding)?;
 
     // Parse header as JSON
     let header: serde_json::Value = serde_json::from_str(header_line)
